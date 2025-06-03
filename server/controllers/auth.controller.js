@@ -4,6 +4,7 @@ const User = db.user;
 const RefreshToken = db.refreshToken;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const Role = db.role;
 
 exports.signup = (req, res) => {
     console.log('⚙️  signup handler called with:', req.body);
@@ -11,7 +12,7 @@ exports.signup = (req, res) => {
     User.create({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        emailId: req.body.emailId,
+        emailId: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8)
     }).then(user => {
         console.log('Utilisateur créé:', user);
@@ -32,7 +33,7 @@ exports.signin = (req, res) => {
 
     User.findOne({
         where: {
-            emailId: req.body.emailId
+            emailId: req.body.email
         }
     }).then(async (user) => {
         if (!user) {
@@ -72,33 +73,34 @@ exports.signin = (req, res) => {
 
 exports.refreshToken = async (req, res) => {
     try {
-        const { refreshToken: requestToken } = req.body;
-        if (!requestToken) {
-            return res.status(403).json({ message: "Le jeton d'actualisation est requis !" });
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ message: "Token non fourni" });
         }
 
-        const storedToken = await RefreshToken.findOne({ where: { token: requestToken } });
-        if (!storedToken) {
-            return res.status(403).json({ message: "Le jeton d'actualisation n'existe pas dans la bdd !" });
+        const decoded = jwt.verify(token, config.secret);
+        const user = await User.findById(decoded.id).populate("roles", "-__v");
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
         }
 
-        if (RefreshToken.verifyExpiration(storedToken)) {
-            RefreshToken.destroy({ where: { id: storedToken.id } });
-            return res.status(403).json({
-                message: "Le jeton d'actualisation a expiré. Veuillez vous reconnecter."
-            });
-        }
-
-        const user = await storedToken.getUser();
-        const newAccessToken = jwt.sign({ id: user.id }, config.secret, {
-            expiresIn: config.jwtRefreshExpiration
+        const newToken = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: config.jwtExpiration
         });
 
-        return res.status(200).json({
-            accessToken: newAccessToken,
-            refreshToken: storedToken.token
+        const authorities = user.roles.map(role => "ROLE_" + role.name.toUpperCase());
+
+        res.status(200).json({
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            roles: authorities,
+            accessToken: newToken
         });
     } catch (err) {
-        return res.status(500).send({ message: err.message });
+        console.error("Erreur lors du rafraîchissement du token:", err);
+        return res.status(401).json({ message: "Token invalide" });
     }
 };

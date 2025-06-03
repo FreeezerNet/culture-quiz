@@ -59,4 +59,13 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.userAccess
     );
+
+    // Route pour récupérer le profil utilisateur
+    app.get(
+        "/api/users/:id",
+        [authJwt.verifyToken],
+        controller.getUserProfile
+    );
+
+    app.get("/api/test/all", controller.allAccess);
 };

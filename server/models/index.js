@@ -24,14 +24,35 @@ const sequelize = new Sequelize(
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+
+// Modèles
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.refreshToken = require("./refreshToken.model.js")(sequelize, Sequelize);
+db.category = require("./category.model.js")(sequelize, Sequelize);
+db.question = require("./question.model.js")(sequelize, Sequelize);
+db.answer = require("./answer.model.js")(sequelize, Sequelize);
+db.quizHistory = require("./quizHistory.model.js")(sequelize, Sequelize);
+
+// Relations
 db.refreshToken.belongsTo(db.user, {
     foreignKey: 'userId',
     targetKey: 'id'
 });
-db.user.hasOne(db.refreshToken, {
-    foreignKey: 'userId',
-    targetKey: 'id'
-});
-module.exports = db
+
+// Une catégorie a plusieurs questions
+db.category.hasMany(db.question);
+db.question.belongsTo(db.category);
+
+// Une question a plusieurs réponses
+db.question.hasMany(db.answer);
+db.answer.belongsTo(db.question);
+
+// Un utilisateur a plusieurs historiques de quiz
+db.user.hasMany(db.quizHistory);
+db.quizHistory.belongsTo(db.user);
+
+// Un historique de quiz est lié à une catégorie
+db.category.hasMany(db.quizHistory);
+db.quizHistory.belongsTo(db.category);
+
+module.exports = db;
