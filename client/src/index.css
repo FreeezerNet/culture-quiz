@@ -1,68 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary-color: #4F46E5;
+  --primary-hover: #4338CA;
+  --secondary-color: #10B981;
+  --secondary-hover: #059669;
+  --background-light: #F9FAFB;
+  --background-dark: #1F2937;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-light: #9CA3AF;
+  --error-color: #EF4444;
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Base styles */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  @apply bg-gray-50 text-gray-900 min-h-screen;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Container styles */
+.container-mobile {
+  @apply px-4 mx-auto max-w-md w-full;
+}
+
+.container-tablet {
+  @apply px-6 mx-auto max-w-2xl w-full;
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl shadow-md p-4 sm:p-6;
+}
+
+/* Button styles */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-center;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-primary-hover;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-white hover:bg-secondary-hover;
+}
+
+.btn-outline {
+  @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
+}
+
+/* Input styles */
+.input {
+  @apply w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent;
+}
+
+/* Animation classes */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+/* Responsive typography */
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  @apply text-2xl sm:text-3xl md:text-4xl font-bold;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+h2 {
+  @apply text-xl sm:text-2xl md:text-3xl font-semibold;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+h3 {
+  @apply text-lg sm:text-xl md:text-2xl font-semibold;
+}
+
+/* Quiz specific styles */
+.quiz-option {
+  @apply p-4 rounded-lg border border-gray-200 bg-white text-left w-full transition-all duration-300;
+  @apply hover:bg-gray-50 hover:border-gray-300;
+}
+
+/* Désactiver le hover quand une réponse est sélectionnée */
+.quiz-option:disabled {
+  @apply cursor-default;
+}
+
+/* Styles pour les réponses correctes */
+.quiz-option-correct {
+  @apply bg-green-50 border-green-500 text-green-700;
+  @apply hover:bg-green-50 hover:border-green-500;
+}
+
+/* Styles pour les réponses incorrectes */
+.quiz-option-incorrect {
+  @apply bg-red-50 border-red-500 text-red-700;
+  @apply hover:bg-red-50 hover:border-red-500;
+}
+
+/* Styles pour la bonne réponse quand une mauvaise réponse est sélectionnée */
+.quiz-option:not(.quiz-option-incorrect).quiz-option-correct {
+  @apply bg-green-50 border-green-500 text-green-700;
+  @apply hover:bg-green-50 hover:border-green-500;
+}
+
+/* Progress bar */
+.progress-bar {
+  @apply w-full h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full bg-primary transition-all duration-300;
+}
+
+/* Grid layouts */
+.grid-cards {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin;
+}
+
+/* Toast notifications */
+.toast {
+  @apply fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 bg-white shadow-lg rounded-lg p-4 transform transition-transform duration-300;
+}
+
+.toast-success {
+  @apply border-l-4 border-success-color;
+}
+
+.toast-error {
+  @apply border-l-4 border-error-color;
+}
+
+/* Navigation */
+.nav-link {
+  @apply px-4 py-2 text-gray-600 hover:text-primary transition-colors duration-200;
+}
+
+.nav-link-active {
+  @apply text-primary font-medium;
+}
+
+/* Pills styles */
+.pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.pill-difficulty {
+    @apply pill;
+}
+
+.pill-difficulty-facile {
+    @apply bg-green-100 text-green-800;
+}
+
+.pill-difficulty-moyen {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.pill-difficulty-difficile {
+    @apply bg-red-100 text-red-800;
+}
+
+.pill-points {
+    @apply pill bg-blue-100 text-blue-800;
+}
+
+.pill-icon {
+    @apply mr-1.5 w-4 h-4;
 }
