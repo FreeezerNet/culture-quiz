@@ -9,7 +9,7 @@ import {
     TrophyIcon,
     BoltIcon,
     AcademicCapIcon
-} from '@heroicons/react/24/solid';
+} from '@heroicons/react/24/outline';
 
 const TIMER_DURATION = 30;
 const ANSWER_DISPLAY_DURATION = 2000; // 2 secondes pour afficher la réponse
