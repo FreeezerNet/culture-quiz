@@ -1,5 +1,5 @@
 module.exports = {
-    secret:"darth-vader",
-    jwtExpiration:60,
-    jwtRefreshExpiration:120,
+    secret: "darth-vader",
+    jwtExpiration: 3600,
+    jwtRefreshExpiration: 86400,
 };

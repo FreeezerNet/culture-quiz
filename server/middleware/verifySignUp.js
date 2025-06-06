@@ -2,13 +2,13 @@ const db = require("../models");
 const User = db.user;
 checkDuplicateUsername = (req, res, next) => {
     User.findOne({
-        where:{
-            emailId:req.body.emailId
+        where: {
+            emailId: req.body.email
         }
     }).then(user => {
-        if(user) {
+        if (user) {
             res.status(400).send({
-                message:"Echoué! Nom d'utilisateur est déjà utilisé!"
+                message: "Echoué! Cet email est déjà utilisé!"
             });
             return;
         }
