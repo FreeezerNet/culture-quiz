@@ -16,10 +16,10 @@ exports.getQuestionsByCategory = async (req, res) => {
             });
         }
 
-        // Récupérer les questions avec leurs réponses et points
+        // Récupérer les questions avec toutes leurs réponses
         const questions = await Question.findAll({
             where: { categoryId: categoryId },
-            attributes: ['id', 'text', 'difficulty', 'points'], // Ajout explicite des points
+            attributes: ['id', 'text', 'difficulty', 'points'],
             include: [{
                 model: Answer,
                 attributes: ['id', 'text', 'isCorrect', 'explanation']
@@ -30,18 +30,20 @@ exports.getQuestionsByCategory = async (req, res) => {
             ]
         });
 
-        console.log('Questions récupérées pour le quiz:', JSON.stringify(questions.map(q => ({
-            id: q.id,
-            text: q.text,
-            points: q.points,
-            difficulty: q.difficulty
-        })), null, 2));
-
         // Formater les questions pour le client
         const formattedQuestions = questions.map(question => {
             const q = question.toJSON();
-            // Mélanger les réponses
-            q.answers = q.answers.sort(() => Math.random() - 0.5);
+
+            // Séparer les bonnes et mauvaises réponses
+            const correctAnswer = q.answers.find(a => a.isCorrect);
+            const wrongAnswers = q.answers.filter(a => !a.isCorrect);
+
+            // Mélanger les mauvaises réponses et en prendre 3
+            const shuffledWrongAnswers = wrongAnswers.sort(() => Math.random() - 0.5).slice(0, 3);
+
+            // Combiner la bonne réponse avec les 3 mauvaises et mélanger
+            q.answers = [...shuffledWrongAnswers, correctAnswer].sort(() => Math.random() - 0.5);
+
             return q;
         });
 
@@ -66,6 +68,29 @@ exports.submitQuiz = async (req, res) => {
             answers: JSON.stringify(answers, null, 2),
             timeSpent
         });
+
+        // Vérifier si un quiz a déjà été soumis pour cette combinaison userId/categoryId dans les dernières 5 secondes
+        const recentQuiz = await db.quizHistory.findOne({
+            where: {
+                userId,
+                categoryId,
+                completedAt: {
+                    [db.Sequelize.Op.gte]: new Date(Date.now() - 5000)
+                }
+            }
+        });
+
+        if (recentQuiz) {
+            console.log('Quiz déjà soumis récemment, envoi des résultats existants');
+            return res.status(200).send({
+                pointsGagnes: recentQuiz.pointsGagnes,
+                totalPoints: recentQuiz.totalPoints,
+                scorePercentage: recentQuiz.score,
+                bonnesReponses: recentQuiz.correctAnswers,
+                totalQuestions: recentQuiz.totalQuestions,
+                timeSpent: recentQuiz.timeSpent
+            });
+        }
 
         // Récupérer toutes les questions du quiz avec leurs points
         const questions = await Question.findAll({

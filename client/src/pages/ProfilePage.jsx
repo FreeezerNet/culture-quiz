@@ -77,7 +77,7 @@ const ProfilePage = () => {
 
                     <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-4">Statistiques</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-sm text-gray-500">Quiz complétés</p>
                                 <p className="text-2xl font-semibold">{userProfile?.quizCompleted || 0}</p>
@@ -89,6 +89,10 @@ const ProfilePage = () => {
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-sm text-gray-500">Meilleur score</p>
                                 <p className="text-2xl font-semibold">{userProfile?.bestScore || 0}%</p>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <p className="text-sm text-gray-500">Temps total</p>
+                                <p className="text-2xl font-semibold">{Math.floor((userProfile?.totalTimeSpent || 0) / 60)} min</p>
                             </div>
                         </div>
                     </div>

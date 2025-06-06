@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.user;
+const QuizHistory = db.quizHistory;
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Contenu public.");
@@ -21,7 +22,18 @@ exports.getUserProfile = async (req, res) => {
             });
         }
 
-        res.status(200).send(user);
+        // Calculer le temps total passé dans les quiz
+        const totalTimeSpent = await QuizHistory.sum('timeSpent', {
+            where: { userId: userId }
+        });
+
+        // Ajouter le temps total au profil
+        const userProfile = {
+            ...user.toJSON(),
+            totalTimeSpent: totalTimeSpent || 0
+        };
+
+        res.status(200).send(userProfile);
     } catch (error) {
         console.error('Erreur lors de la récupération du profil:', error);
         res.status(500).send({

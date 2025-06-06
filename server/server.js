@@ -28,21 +28,36 @@ app.listen(PORT, () => console.log(`Serveur sur ${PORT}`));
 // Initialisation de la base de données
 const initializeDatabase = async () => {
     try {
-        // Vérifie si les tables existent déjà
-        const categories = await db.category.findAll();
+        // Désactive les contraintes de clés étrangères
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+        console.log('Contraintes de clés étrangères désactivées');
 
-        // Si aucune catégorie n'existe, on initialise les données
-        if (categories.length === 0) {
-            await db.sequelize.sync({ force: true });
-            console.log('Base de données synchronisée et tables recréées');
-            await initializeData();
-        } else {
-            // Sinon, on synchronise simplement sans forcer
-            await db.sequelize.sync();
-            console.log('Base de données synchronisée');
+        // Récupère toutes les tables de la base de données
+        const [results] = await db.sequelize.query('SHOW TABLES');
+        const tableNames = results.map(result => Object.values(result)[0]);
+
+        // Supprime chaque table individuellement
+        for (const tableName of tableNames) {
+            await db.sequelize.query(`DROP TABLE IF EXISTS \`${tableName}\``);
+            console.log(`Table ${tableName} supprimée`);
         }
+        console.log('Toutes les tables ont été supprimées');
+
+        // Réactive les contraintes de clés étrangères
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+        console.log('Contraintes de clés étrangères réactivées');
+
+        // Crée toutes les tables
+        await db.sequelize.sync();
+        console.log('Toutes les tables ont été recréées');
+
+        // Initialise les données
+        await initializeData();
+        console.log('Données initiales créées avec succès');
     } catch (error) {
         console.error('Erreur lors de l\'initialisation de la base de données:', error);
+        // Réactive les contraintes de clés étrangères en cas d'erreur
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
     }
 };
 

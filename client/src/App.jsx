@@ -60,7 +60,7 @@ const AppContent = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="pt-16">
+      <div>
         <Routes>
           <Route
             path="/auth"
