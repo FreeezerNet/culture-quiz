@@ -5,10 +5,23 @@ import api from '../api/axios';
 const CategoryCard = ({ category, onClick }) => (
     <button
         onClick={() => onClick(category.id)}
-        className="card hover:shadow-lg transition-shadow duration-200 text-left"
+        className="card hover:shadow-lg transition-shadow duration-200 text-left relative overflow-hidden"
     >
-        <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
-        <p className="text-gray-600 text-sm">{category.description}</p>
+        <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+                <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
+                <p className="text-gray-600">{category.description}</p>
+            </div>
+            <div className="flex-shrink-0 ml-4">
+                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    <img
+                        src={category.imageUrl}
+                        alt={category.name}
+                        className="w-8 h-8 object-contain"
+                    />
+                </div>
+            </div>
+        </div>
         <div className="mt-4 flex justify-between items-center">
             <span className="text-sm text-primary">Commencer le quiz</span>
             <svg
