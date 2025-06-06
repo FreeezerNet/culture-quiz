@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './header.css'
 
 const Header = () => {
     const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
         navigate('/auth');
     };
+
+    // Ne pas afficher le header sur la page d'authentification
+    if (location.pathname === '/auth') {
+        return null;
+    }
 
     return (
         <header className="bg-white shadow-sm">

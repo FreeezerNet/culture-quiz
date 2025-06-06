@@ -15,9 +15,9 @@ const initializeData = async () => {
 
         // Créer les catégories
         const categories = await db.category.bulkCreate([
-            { name: 'Culture Générale', description: 'Questions variées sur différents sujets', imageUrl: 'https://example.com/culture.jpg' },
-            { name: 'Sciences', description: 'Questions sur les sciences et la technologie', imageUrl: 'https://example.com/science.jpg' },
-            { name: 'Histoire', description: 'Questions sur l\'histoire mondiale', imageUrl: 'https://example.com/history.jpg' }
+            { name: 'Culture Générale', description: 'Questions variées sur différents sujets', imageUrl: 'https://img.icons8.com/?size=100&id=CxypJ1aoy68v&format=png&color=000000' },
+            { name: 'Sciences', description: 'Questions sur les sciences et la technologie', imageUrl: 'https://img.icons8.com/?size=100&id=EdEF9TzsFPs1&format=png&color=000000' },
+            { name: 'Histoire', description: 'Questions sur l\'histoire mondiale', imageUrl: 'https://img.icons8.com/?size=100&id=q79Z7xiOM2AQ&format=png&color=000000' }
         ]);
 
         // Créer les questions et réponses pour chaque catégorie
