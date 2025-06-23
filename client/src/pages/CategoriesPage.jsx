@@ -5,7 +5,7 @@ import api from '../api/axios';
 const CategoryCard = ({ category, onClick }) => (
     <button
         onClick={() => onClick(category.id)}
-        className="card hover:shadow-lg transition-shadow duration-200 text-left relative overflow-hidden"
+        className="card hover:shadow-lg transition-shadow duration-200 text-left relative overflow-hidden w-full"
     >
         <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
@@ -85,7 +85,7 @@ const CategoriesPage = () => {
             <div className="container-mobile md:container-tablet">
                 <h1 className="text-center mb-8">Choisissez une catégorie</h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-wrap justify-between gap-6">
                     {categories.map((category) => (
                         <CategoryCard
                             key={category.id}
